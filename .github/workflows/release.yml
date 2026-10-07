@@ -1,0 +1,92 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf libssl-dev zstd
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: build
+        run: |
+          npm ci --ignore-scripts
+          npm run unpack
+          rm -rf assets
+          npm run tauri build -- --bundles deb,appimage
+
+      - name: upload
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/appimage/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: free disk
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force "$env:TEMP\*" -ErrorAction SilentlyContinue
+          if (Test-Path "C:\Windows\Temp") { Remove-Item -Recurse -Force "C:\Windows\Temp\*" -ErrorAction SilentlyContinue }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: zstd
+        shell: pwsh
+        run: |
+          $url = "https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-v1.5.6-win64.zip"
+          Invoke-WebRequest -Uri $url -OutFile zstd.zip
+          Expand-Archive -Path zstd.zip -DestinationPath zstd-bin -Force
+          Add-Content $env:GITHUB_PATH (Resolve-Path "zstd-bin/zstd-v1.5.6-win64").Path
+
+      - name: build
+        shell: bash
+        run: |
+          npm ci --ignore-scripts
+          npm run unpack
+          rm -rf assets
+          npm run tauri build -- --bundles nsis
+
+      - name: upload
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            src-tauri/target/release/bundle/nsis/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

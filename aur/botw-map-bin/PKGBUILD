@@ -1,0 +1,20 @@
+# Maintainer: swap
+pkgname=botw-map-bin
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Offline Breath of the Wild companion map (release deb)"
+arch=('x86_64')
+url="https://github.com/swap/botw-map"
+license=('LicenseRef-fan')
+depends=('webkit2gtk-4.1' 'gtk3' 'openssl')
+provides=('botw-map')
+conflicts=('botw-map')
+options=('!strip')
+source=(
+  "botw-map-${pkgver}.deb::${url}/releases/download/v${pkgver}/BOTW.Map_${pkgver}_amd64.deb"
+)
+sha256sums=('adb2a2d98130b7469050d9d62200584ff66921fd4ebe4a9dc46f187d8c7b4658')
+
+package() {
+  bsdtar -xf data.tar.gz -C "${pkgdir}"
+}

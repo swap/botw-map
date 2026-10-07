@@ -1,0 +1,23 @@
+{
+  "type": "stylized-svg",
+  "redistributable": true,
+  "note": "Generated from Location/Place marker coordinates. Does not contain Nintendo textures.",
+  "bounds": {
+    "xMin": -6000,
+    "xMax": 6000,
+    "zMin": -5000,
+    "zMax": 5000
+  },
+  "leafletImageBounds": [
+    [
+      -5000,
+      -6000
+    ],
+    [
+      5000,
+      6000
+    ]
+  ],
+  "width": 2400,
+  "height": 2000
+}

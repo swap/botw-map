@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-10-07T17:54:31.339Z",
+  "counts": {
+    "shrine": 136,
+    "tower": 15,
+    "lab": 2,
+    "village": 9,
+    "stable": 15,
+    "landmark": 7,
+    "shop": 37,
+    "korok": 900,
+    "shrineQuest": 34,
+    "mainQuest": 17,
+    "sideQuest": 81,
+    "chest": 1197,
+    "settlement": 6,
+    "memory": 23,
+    "greatFairy": 5,
+    "talus": 40,
+    "hinox": 40,
+    "lynel": 23,
+    "molduga": 4,
+    "guardian": 148,
+    "goddess": 14,
+    "raft": 46,
+    "cookingPot": 112,
+    "objective": 33,
+    "subregion": 24
+  }
+}

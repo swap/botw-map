@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Styled to match Yoshi.noir / objmap travel-gate diamonds (same frame as mapicon_dungeon). -->
+<svg class="box" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1066.4 1066.4" enable-background="new 0 0 1066.4 1066.4" xml:space="preserve">
+<style>
+.box {
+  filter: drop-shadow(0 0 5px #b070d09f) drop-shadow(0 0 5px #b070d09f);
+}
+</style>
+<path fill="#c9a0dc" d="M533.2,823l289.8-289.8L533.2,243.4L243.4,533.2L533.2,823z"/>
+<path fill="none" stroke="#4a2060" stroke-width="11.1393" d="M533.2,823l289.8-289.8L533.2,243.4L243.4,533.2L533.2,823z"/>
+<path fill="#6b3a88" d="M380,500 h306 v180 H380 z"/>
+<path fill="#8a55a8" d="M380,500 Q533,390 686,500"/>
+<rect fill="#2e1f33" x="510" y="560" width="46" height="55" rx="6"/>
+</svg>
