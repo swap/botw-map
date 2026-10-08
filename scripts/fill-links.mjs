@@ -75,13 +75,9 @@ function plain(src) {
 
 function shrineBlurb(wikitext) {
   const body = wikitext.replace(/^\{\{Infobox[\s\S]*?\n\}\}\s*/m, "");
-  const lead = plain(body.split(/\n==/)[0]);
-  const themes = body.match(/==\s*Themes and Navigation\s*==\s*([\s\S]*?)(?:\n={2,}|$)/i);
-  const nav = themes ? plain(themes[1]) : "";
-  const parts = [lead, nav].filter(Boolean);
-  let text = parts.join("\n\n").trim();
-  if (text.length > 1400) text = text.slice(0, 1390).replace(/\s+\S*$/, "") + "...";
-  return text || null;
+  const lead = plain(body.split(/\n==/)[0]).replace(/\s+/g, " ").trim();
+  const sentence = lead.match(/^[\s\S]+?[.!?](?=\s|$)/);
+  return (sentence ? sentence[0] : lead).trim() || null;
 }
 
 async function shrineText(names) {
