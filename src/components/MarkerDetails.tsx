@@ -1,4 +1,5 @@
 import { useState, type CSSProperties, type ReactNode } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import {
   ICON_URL,
   ICON_URL_DLC_SHRINE,
@@ -28,6 +29,51 @@ function iconFor(marker: MapMarker): string {
 
 function humanize(value: string): string {
   return /\s/.test(value) ? value : value.replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+type LinkKind = "guide" | "wiki" | "videos";
+
+function isTauri(): boolean {
+  return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+}
+
+async function openExternal(url: string) {
+  if (isTauri()) {
+    await invoke("open_link", { url });
+  } else {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+}
+
+function LinkGlyph({ kind }: { kind: LinkKind }) {
+  if (kind === "guide") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M3.75 5.1c1.55-.95 3.55-1.35 5.75-1.35.9 0 1.75.1 2.5.28V19.2a9.3 9.3 0 0 0-2.5-.35c-1.85 0-3.5.35-4.75 1.05a.75.75 0 0 1-1-.7V5.75c0-.25.12-.48.3-.65Zm16.5 0a.75.75 0 0 1 .3.65v13.45a.75.75 0 0 1-1 .7c-1.25-.7-2.9-1.05-4.75-1.05-.9 0-1.75.12-2.5.35V4.03c.75-.18 1.6-.28 2.5-.28 2.2 0 4.2.4 5.75 1.35Z"
+        />
+      </svg>
+    );
+  }
+  if (kind === "wiki") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M7 3.75A1.75 1.75 0 0 0 5.25 5.5v13A1.75 1.75 0 0 0 7 20.25h10A1.75 1.75 0 0 0 18.75 18.5v-13A1.75 1.75 0 0 0 17 3.75H7Zm1.5 4a.75.75 0 0 1 0-1.5h7a.75.75 0 0 1 0 1.5h-7Zm0 3.5a.75.75 0 0 1 0-1.5h7a.75.75 0 0 1 0 1.5h-7Zm0 3.5a.75.75 0 0 1 0-1.5h4.5a.75.75 0 0 1 0 1.5H8.5Z"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M4.5 5.25A1.75 1.75 0 0 0 2.75 7v10c0 .97.78 1.75 1.75 1.75h15c.97 0 1.75-.78 1.75-1.75V7c0-.97-.78-1.75-1.75-1.75h-15Zm1 .75h1.25v1.5H5.5V6Zm0 3.25h1.25v1.5H5.5v-1.5Zm0 3.25h1.25v1.5H5.5v-1.5Zm0 3.25h1.25v1.5H5.5v-1.5Zm12-9.75H18.75v1.5H17.5V6Zm0 3.25H18.75v1.5H17.5v-1.5Zm0 3.25H18.75v1.5H17.5v-1.5Zm0 3.25H18.75v1.5H17.5v-1.5ZM10.2 9.05a.75.75 0 0 1 1.12-.65l4.2 2.45a.75.75 0 0 1 0 1.3l-4.2 2.45a.75.75 0 0 1-1.12-.65V9.05Z"
+      />
+    </svg>
+  );
 }
 
 function MetaRow({
@@ -80,6 +126,10 @@ export function MarkerDetails({
   const showPhoto = Boolean(imageUrl) && failedImageId !== marker.id;
   const byline = [region, trial].filter(Boolean).join(" · ");
 
+  const linkRows: { kind: LinkKind; label: string; url: string }[] = [];
+  if (marker.links?.guide) linkRows.push({ kind: "guide", label: "Guide", url: marker.links.guide });
+  if (marker.links?.wiki) linkRows.push({ kind: "wiki", label: "Wiki", url: marker.links.wiki });
+  if (marker.links?.videos) linkRows.push({ kind: "videos", label: "Videos", url: marker.links.videos });
   const hasFacts = Boolean(
     reward || items || description || note || info.dlc || info.seedNum,
   );
@@ -194,6 +244,24 @@ export function MarkerDetails({
       )}
 
       <footer className="details-footer">
+        {linkRows.length > 0 && (
+          <div className="details-links">
+            {linkRows.map((link) => (
+              <button
+                key={link.kind}
+                type="button"
+                className="details-link"
+                onClick={() => openExternal(link.url)}
+              >
+                <LinkGlyph kind={link.kind} />
+                <span className="details-link-label">{link.label}</span>
+                <span className="details-link-ext" aria-hidden="true">
+                  ↗
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
         <button
           type="button"
           className={`details-done${completed ? " is-on" : ""}`}

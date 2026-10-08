@@ -1,6 +1,6 @@
 # Maintainer: swap
 pkgname=botw-map
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc="Offline Breath of the Wild companion map"
 arch=('x86_64')
@@ -11,7 +11,7 @@ options=('!strip')
 source=(
   "${pkgname}-${pkgver}.deb::${url}/releases/download/v${pkgver}/BOTW.Map_${pkgver}_amd64.deb"
 )
-sha256sums=('adb2a2d98130b7469050d9d62200584ff66921fd4ebe4a9dc46f187d8c7b4658')
+sha256sums=('SKIP')
 
 package() {
   bsdtar -xf data.tar.gz -C "${pkgdir}"

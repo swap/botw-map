@@ -53,6 +53,12 @@ export interface MarkerInfo {
   shopKind?: string;
 }
 
+export interface MarkerLinks {
+  guide: string | null;
+  wiki: string | null;
+  videos: string | null;
+}
+
 export interface MapMarker {
   id: string;
   category: MarkerCategory;
@@ -70,6 +76,7 @@ export interface MapMarker {
   coordinates?: { x: number; y: number; z: number };
   info: MarkerInfo;
   image?: string | null;
+  links?: MarkerLinks;
 }
 
 export interface MarkersPayload {

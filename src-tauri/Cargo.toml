@@ -1,6 +1,6 @@
 [package]
 name = "botw-map"
-version = "0.1.0"
+version = "0.1.1"
 description = "BOTW Map"
 authors = ["swap"]
 edition = "2021"
